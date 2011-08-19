@@ -24,6 +24,15 @@ var engine = function(){
 		alert("canvas is not supported");
 	}
 	
+	function preloadImages(imgList){
+		var imgArray = [imgList.length];
+		for(var i=0; i<imgList.length;i++){
+			imgArray[i] = new Image();
+			imgArray[i].src = imgList[i];
+		}
+		return imgArray
+	}
+	
 return {
 	
 gameInit:function(data){
@@ -32,9 +41,10 @@ gameInit:function(data){
 	this.forecolor = data.foreColor;
 	this.mainChar = data.sdmanObj;
 	this.mainChar.ref = sdman;
+	this.mainChar.landImages = preloadImages(this.mainChar.landImg)
 	this.mainChar.landImgRef = new Image();
 	this.mainChar.waterImgRef = new Image();
-	this.mainChar.landImgRef.src = this.mainChar.landImg[0];
+	this.mainChar.landImgRef.src = this.mainChar.landImages[0].src;
 	this.mainChar.landImgRef.onload = function(){
 		return setInterval("engine.enterFrame()", 10);
 	};
@@ -63,7 +73,7 @@ drawStage:function(){
 	foreground.fillStyle = this.forecolor;
 	foreground.fillRect(0,100,750,450);		
 	if(oceanColorArray.length < 1){
-		oceanColorArray = ocean.getImageData(10,10,100,100).data
+		//oceanColorArray = ocean.getImageData(10,10,100,100).data
 	}
 },
 
@@ -110,15 +120,14 @@ keyPress:function(e){
 },
 
 setOrientation:function(characterImgRef, orientation){
-	characterImgRef.src = this.mainChar.landImg[orientation];
+	characterImgRef.src = this.mainChar.landImages[orientation].src;
 },
 
 checkTerrain:function(l,t){
-	var imgd = grid_canvas.getContext("2d").getImageData(l, t, this.mainChar.landImgRef.height, this.mainChar.landImgRef.width);
+/*	var imgd = grid_canvas.getContext("2d").getImageData(l, t, this.mainChar.landImgRef.height, this.mainChar.landImgRef.width);
 	var pix = imgd.data;
-//	console.log(l, t, this.mainChar.landImgRef.height, this.mainChar.landImgRef.width)
 	console.log("current pixel data: " + pix[0], pix[1], pix[2], pix[3], pix[4], pix[5], pix[6]);
-	console.log("ocean pixel data: " + oceanColorArray[0], oceanColorArray[1], oceanColorArray[2], oceanColorArray[3], oceanColorArray[4], oceanColorArray[5], oceanColorArray[6])
+	console.log("ocean pixel data: " + oceanColorArray[0], oceanColorArray[1], oceanColorArray[2], oceanColorArray[3], oceanColorArray[4], oceanColorArray[5], oceanColorArray[6])*/
 },
 
 bugRoll:function(e){
