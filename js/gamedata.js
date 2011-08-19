@@ -3,8 +3,8 @@ gameFeed({
 		color:"#e42217",
 		top:400,
 		left:20,
-		landImg: ["tank2_up.png", "tank2_right.png", "tank2_down.png", "tank2_left.png"],
-		waterImg: ["kayak.png"],
+		landImg: ["img/tank_up.png", "img/tank_right.png", "img/tank_down.png", "img/tank_left.png"],
+		waterImg: ["img/kayak.png"],
 		paceOfMovement:10
 	},
 	foreColor:"#7F5A58",
