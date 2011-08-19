@@ -8,9 +8,10 @@ var engine = function(){
 	viewFinderHeight = 500,
 	oceanPixelData = [],
 	foregroundPixelData = [],
-	oceanColorArray = [];
+	oceanColorArray = [], 
+	grid_canvas = document.getElementById("screen"),
+	orientation_enum = {"up":0, "right":1, "down": 2, "left": 3};
 	
-	var grid_canvas = document.getElementById("screen");
 	if (grid_canvas.getContext){
 		ocean = grid_canvas.getContext("2d");
 		foreground = grid_canvas.getContext("2d");		
@@ -33,7 +34,7 @@ gameInit:function(data){
 	this.mainChar.ref = sdman;
 	this.mainChar.landImgRef = new Image();
 	this.mainChar.waterImgRef = new Image();
-	this.mainChar.landImgRef.src = this.mainChar.landImg;
+	this.mainChar.landImgRef.src = this.mainChar.landImg[0];
 	this.mainChar.landImgRef.onload = function(){
 		return setInterval("engine.enterFrame()", 10);
 	};
@@ -72,10 +73,7 @@ keyPress:function(e){
 	if(e.keyCode === 39){
 		//if arrow right
 		if((this.mainChar.left + this.mainChar.paceOfMovement) < (viewFinderWidth - this.mainChar.landImgRef.width)){
-			if(this.mainChar.facing !== "right"){
-				//this.mainChar.ref.rotate(90);
-				this.mainChar.facing = "right";
-			}
+			this.setOrientation(this.mainChar.landImgRef, orientation_enum.right)
 			newLeft += this.mainChar.paceOfMovement;			
 		}else{
 			//TODO scroll screen right
@@ -83,6 +81,7 @@ keyPress:function(e){
 	}if(e.keyCode === 37){
 		//if arrow left
 		if((this.mainChar.left - this.mainChar.paceOfMovement) > 0){
+			this.setOrientation(this.mainChar.landImgRef, orientation_enum.left)
 			newLeft -= this.mainChar.paceOfMovement;			
 		}else{
 			//TODO scroll screen left
@@ -90,6 +89,7 @@ keyPress:function(e){
 	}if(e.keyCode === 38){
 		//if arrow up
 		if((this.mainChar.top - this.mainChar.paceOfMovement) > 0){
+			this.setOrientation(this.mainChar.landImgRef, orientation_enum.up)
 			newTop -= this.mainChar.paceOfMovement;			
 		}else{
 			//TODO scroll screen up
@@ -98,6 +98,7 @@ keyPress:function(e){
 	}if(e.keyCode === 40){
 		//if arrow down
 		if((this.mainChar.top + this.mainChar.paceOfMovement) < (viewFinderHeight - this.mainChar.landImgRef.height)){
+			this.setOrientation(this.mainChar.landImgRef, orientation_enum.down)
 			newTop += this.mainChar.paceOfMovement;			
 		}else{
 			//TODO scroll screen down
@@ -108,12 +109,16 @@ keyPress:function(e){
 	this.mainChar.top = newTop;
 },
 
+setOrientation:function(characterImgRef, orientation){
+	characterImgRef.src = this.mainChar.landImg[orientation];
+},
+
 checkTerrain:function(l,t){
 	var imgd = grid_canvas.getContext("2d").getImageData(l, t, this.mainChar.landImgRef.height, this.mainChar.landImgRef.width);
 	var pix = imgd.data;
-	console.log(l, t, this.mainChar.landImgRef.height, this.mainChar.landImgRef.width)
-	console.log(pix[0], pix[1], pix[2], pix[3]);
-	console.log(oceanColorArray[0], oceanColorArray[1], oceanColorArray[2], oceanColorArray[3])
+//	console.log(l, t, this.mainChar.landImgRef.height, this.mainChar.landImgRef.width)
+	console.log("current pixel data: " + pix[0], pix[1], pix[2], pix[3], pix[4], pix[5], pix[6]);
+	console.log("ocean pixel data: " + oceanColorArray[0], oceanColorArray[1], oceanColorArray[2], oceanColorArray[3], oceanColorArray[4], oceanColorArray[5], oceanColorArray[6])
 },
 
 bugRoll:function(e){
