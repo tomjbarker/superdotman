@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US">
+<head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <title></title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="stylesheet" href="css/bc.css" type="text/css" />
+</head>
+<body onload="init()" onkeypress="engine.keyPress(event)">
+<canvas id="screen" width="750" height="500"  onMouseMove="engine.bugRoll(event)" style="z-index: 1; position:absolute; left:0px; top:0px;"></canvas>
+<canvas id="protagonist" with="200" height="500" style="z-index: 200; position:absolute; left:0px; top:0px;"></canvas>
+<div id="bugInfo"></div>
+<div id="legend">
+
+</div>
+<script language="javascript" src="js/engine.js">
+</script>
+<script language="javascript">
+function init(){
+	var script = document.createElement("script");        
+	script.setAttribute("src","js/gamedata.js?retHandler=gameFeed");
+	script.setAttribute("type","text/javascript");                
+	document.body.appendChild(script);
+}
+
+function gameFeed(data){
+	engine.gameInit(data);
+}
+	
+</script>
+</body>
+</html>
