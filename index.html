@@ -7,11 +7,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 </head>
 <body onload="init()" onkeypress="engine.keyPress(event)">
-<canvas id="screen" width="750" height="500"  onMouseMove="engine.bugRoll(event)" style="z-index: 1; position:absolute; left:0px; top:0px;"></canvas>
-<canvas id="protagonist" with="200" height="500" style="z-index: 200; position:absolute; left:0px; top:0px;"></canvas>
-<div id="bugInfo"></div>
-<div id="legend">
-
+<canvas id="screen" width="750" height="500"  onMouseMove="engine.bugRoll(event)" style="z-index: 1; position:absolute; left:5px; top:5px;"></canvas>
+<div id="legend" style="z-index: 1; position:absolute; left:780px; top:5px;">
+use arrow keys to navigate
 </div>
 <script language="javascript" src="js/engine.js">
 </script>

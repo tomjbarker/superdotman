@@ -4,15 +4,18 @@ var engine = function(){
 	forecolor = "",
 	charcolor = "",
 	mainChar = {},
+	MAX_DEPTH = 32,
 	viewFinderWidth = 750,
 	viewFinderHeight = 500,
 	oceanPixelData = [],
 	foregroundPixelData = [],
 	oceanColorArray = [], 
 	grid_canvas = document.getElementById("screen"),
-	orientation_enum = {"up":0, "right":1, "down": 2, "left": 3};
+	orientation_enum = {"up":0, "right":1, "down": 2, "left": 3},
+	stars = [512];
 	
 	if (grid_canvas.getContext){
+		space = grid_canvas.getContext("2d");
 		ocean = grid_canvas.getContext("2d");
 		foreground = grid_canvas.getContext("2d");		
 		sdman = grid_canvas.getContext("2d");
@@ -33,9 +36,57 @@ var engine = function(){
 		return imgArray
 	}
 	
+	/* draw space*/
+	
+	
+	/* Returns a random number in the range [minVal,maxVal] */
+	  function randomRange(minVal,maxVal) {
+	    return Math.floor(Math.random() * (maxVal - minVal - 1)) + minVal;
+	  }
+
+	  function initStars() {
+	    for( var i = 0; i < stars.length; i++ ) {
+	      stars[i] = {
+	        x: randomRange(-25,25),
+	        y: randomRange(-25,25),
+	        z: randomRange(1,MAX_DEPTH)
+	       }
+	    }
+	  }
+
+	  function drawSpace() {
+	    var halfWidth  = grid_canvas.width / 2;
+	    var halfHeight = grid_canvas.height / 2;
+
+	    space.fillStyle = "rgb(0,0,0)";
+	    space.fillRect(0,0,grid_canvas.width,grid_canvas.height);
+
+	    for( var i = 0; i < stars.length; i++ ) {
+	      stars[i].z -= 0.2;
+
+	      if( stars[i].z <= 0 ) {
+	        stars[i].x = randomRange(-25,25);
+	        stars[i].y = randomRange(-25,25);
+	        stars[i].z = MAX_DEPTH;
+	      }
+
+	      var k  = 128.0 / stars[i].z;
+	      var px = stars[i].x * k + halfWidth;
+	      var py = stars[i].y * k + halfHeight;
+
+	      if( px >= 0 && px <= 500 && py >= 0 && py <= 400 ) {
+	        var size = (1 - stars[i].z / 32.0) * 5;
+	        var shade = parseInt((1 - stars[i].z / 32.0) * 255);
+	        space.fillStyle = "rgb(" + shade + "," + shade + "," + shade + ")";
+	        space.fillRect(px,py,size,size);
+	      }
+	    }
+	  }
+	
 return {
 	
 gameInit:function(data){
+	initStars()
 	this.enemyList = data.enemyList; 
 	this.bgcolor = data.backColor;
 	this.forecolor = data.foreColor;
@@ -67,14 +118,14 @@ spawnCharacter:function(character){
 },
 
 drawStage:function(){
-	
-	ocean.fillStyle = water_color;
+	drawSpace()
+/*	ocean.fillStyle = water_color;
 	ocean.fillRect(0,0,1750,1550);
 	foreground.fillStyle = this.forecolor;
 	foreground.fillRect(0,100,750,450);		
 	if(oceanColorArray.length < 1){
-		//oceanColorArray = ocean.getImageData(10,10,100,100).data
-	}
+
+	}*/
 },
 
 keyPress:function(e){
