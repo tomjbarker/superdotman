@@ -7,21 +7,20 @@ var engine = function(){
 	MAX_DEPTH = 32,
 	viewFinderWidth = 750,
 	viewFinderHeight = 500,
-	oceanPixelData = [],
-	foregroundPixelData = [],
-	oceanColorArray = [], 
+	currentLevel = "land",
+	groundTexture,
 	grid_canvas = document.getElementById("screen"),
 	orientation_enum = {"up":0, "right":1, "down": 2, "left": 3},
 	stars = [512];
 	
 	if (grid_canvas.getContext){
 		space = grid_canvas.getContext("2d");
-		ocean = grid_canvas.getContext("2d");
+		sky = grid_canvas.getContext("2d");
 		foreground = grid_canvas.getContext("2d");		
 		sdman = grid_canvas.getContext("2d");
-		water_color = ocean.createLinearGradient(0, 0, 0, 750),
-		water_color.addColorStop(0.0, '#3a77bf');
-	    water_color.addColorStop(0.9, '#b8d2ee');
+		sky_color = sky.createLinearGradient(0, 0, 0, 750),
+		sky_color.addColorStop(0.0, '#3a77bf');
+	    sky_color.addColorStop(0.9, '#b8d2ee');
 		
 	}else{
 		alert("canvas is not supported");
@@ -36,9 +35,7 @@ var engine = function(){
 		return imgArray
 	}
 	
-	/* draw space*/
-	
-	
+	/* draw space level*/
 	/* Returns a random number in the range [minVal,maxVal] */
 	  function randomRange(minVal,maxVal) {
 	    return Math.floor(Math.random() * (maxVal - minVal - 1)) + minVal;
@@ -87,45 +84,76 @@ return {
 	
 gameInit:function(data){
 	initStars()
-	this.enemyList = data.enemyList; 
+	this.redCrab = data.redCrab; 
+	this.redCrab.ref = sdman
 	this.bgcolor = data.backColor;
 	this.forecolor = data.foreColor;
 	this.mainChar = data.sdmanObj;
 	this.mainChar.ref = sdman;
-	this.mainChar.landImages = preloadImages(this.mainChar.landImg)
-	this.mainChar.landImgRef = new Image();
-	this.mainChar.waterImgRef = new Image();
-	this.mainChar.landImgRef.src = this.mainChar.landImages[0].src;
+	this.loadCharacterImages(this.mainChar);
+	this.loadCharacterImages(this.redCrab);
+	this.groundTexture = new Image();
+	this.groundTexture.src = data.groundTexture
 	this.mainChar.landImgRef.onload = function(){
-		return setInterval("engine.enterFrame()", 10);
+		return setInterval("engine.enterFrame()", data.frameRate);
 	};
-	this.mainChar.waterImgRef.src = this.mainChar.waterImg;
+},
+
+setCurrentLevel:function(level){
+	currentLevel = level;
 },
 
 enterFrame:function(){
 	this.clearScreen();
 	this.drawStage();
 	this.spawnCharacter(this.mainChar);
+	this.spawnCharacter(this.redCrab);
 },
 
 clearScreen:function(){
 	this.mainChar.ref.clearRect(0, 0, grid_canvas.width, grid_canvas.height);
 },
 
-spawnCharacter:function(character){	
-	character.ref.drawImage(character.landImgRef,character.left,character.top);
+loadCharacterImages:function(character){
+	console.log(character)
+	character.landImages = preloadImages(character.landImg)
+	character.skyImages = preloadImages(character.skyImg)
+	character.landImgRef = new Image();
+	character.skyImgRef = new Image();
+	character.landImgRef.src = character.landImages[0].src;
 	
 },
 
-drawStage:function(){
-	drawSpace()
-/*	ocean.fillStyle = water_color;
-	ocean.fillRect(0,0,1750,1550);
-	foreground.fillStyle = this.forecolor;
-	foreground.fillRect(0,100,750,450);		
-	if(oceanColorArray.length < 1){
+spawnCharacter:function(character){	
+	character.ref.drawImage(character.landImgRef,character.left,character.top);
+},
 
-	}*/
+drawLand:function(){
+//	console.log(this.mainChar.groundTexture)
+	var pattern = foreground.createPattern(this.groundTexture, "repeat");
+	foreground.fillStyle = pattern;
+//	foreground.fill();
+	
+//	foreground.fillStyle = this.forecolor;
+	foreground.fillRect(0,0,750,550);		
+},
+
+drawSky:function(){
+	sky.fillStyle = sky_color;
+	sky.fillRect(0,0,1750,1550);	
+},
+
+drawStage:function(){
+//	console.log(currentLevel)
+	if(currentLevel === "land"){
+		this.drawLand();	
+	}else if(currentLevel === "sky"){
+		this.drawSky();
+	}else if(currentLevel === "space"){
+		drawSpace()		
+	}else{
+	this.drawSky();	
+	}
 },
 
 keyPress:function(e){
@@ -165,26 +193,27 @@ keyPress:function(e){
 			//TODO scroll screen down
 		}
 	}
-	this.checkTerrain(newLeft, newTop);
 	this.mainChar.left = newLeft;
 	this.mainChar.top = newTop;
 },
 
 setOrientation:function(characterImgRef, orientation){
-	characterImgRef.src = this.mainChar.landImages[orientation].src;
+	if(currentLevel === "land"){
+		characterImgRef.src = this.mainChar.landImages[orientation].src;
+	}else if(currentLevel === "sky"){
+		characterImgRef.src = this.mainChar.skyImages[orientation].src;
+	}else if(currentLevel === "space"){
+		characterImgRef.src = this.mainChar.skyImages[orientation].src;
+	}else{
+		characterImgRef.src = this.mainChar.skyImages[orientation].src;
+	}
+
 },
 
-checkTerrain:function(l,t){
-/*	var imgd = grid_canvas.getContext("2d").getImageData(l, t, this.mainChar.landImgRef.height, this.mainChar.landImgRef.width);
-	var pix = imgd.data;
-	console.log("current pixel data: " + pix[0], pix[1], pix[2], pix[3], pix[4], pix[5], pix[6]);
-	console.log("ocean pixel data: " + oceanColorArray[0], oceanColorArray[1], oceanColorArray[2], oceanColorArray[3], oceanColorArray[4], oceanColorArray[5], oceanColorArray[6])*/
-},
 
 bugRoll:function(e){
 	xCoord = e.clientX;
 	yCoord = e.clientY;
-//	console.log(xCoord, yCoord);
 	}
 }
 }();
