@@ -100,6 +100,8 @@ enterFrame:function(){
 	this.drawStage();
 	this.spawnCharacter(this.mainChar, this.mainChar.landImgRef);
 	this.spawnCharacter(this.redCrab, this.redCrab.landImgRef);
+	if(this.mainChar.hasFired === true)
+		this.pushBullet();
 },
 
 clearScreen:function(){
@@ -152,8 +154,22 @@ drawStage:function(){
 	
 },
 
+pushBullet:function(){
+	 if(this.mainChar.offensiveWeapon.projectileOrientation === orientation_enum.down){
+		this.mainChar.offensiveWeapon.top += this.mainChar.offensiveWeapon.paceOfMovement
+	}else if(this.mainChar.offensiveWeapon.projectileOrientation === orientation_enum.up){
+			this.mainChar.offensiveWeapon.top -= this.mainChar.offensiveWeapon.paceOfMovement
+	}else if(this.mainChar.offensiveWeapon.projectileOrientation === orientation_enum.right){
+			this.mainChar.offensiveWeapon.left += this.mainChar.offensiveWeapon.paceOfMovement
+	}else if(this.mainChar.offensiveWeapon.projectileOrientation === orientation_enum.left){
+			this.mainChar.offensiveWeapon.left -= this.mainChar.offensiveWeapon.paceOfMovement
+	}
+	this.spawnCharacter(this.mainChar.offensiveWeapon, this.mainChar.bulletImgRef)
+},
+
 fireWeapon:function(){
-	console.log("boom!" + this.mainChar.offensiveWeapon.bulletImages[currentOrientation].src, currentOrientation)
+	this.mainChar.hasFired = true;
+	this.mainChar.offensiveWeapon.projectileOrientation = currentOrientation
 	this.mainChar.bulletImgRef.src = this.mainChar.offensiveWeapon.bulletImages[currentOrientation].src;
 	if(currentOrientation === orientation_enum.right){
 		this.mainChar.offensiveWeapon.top = this.mainChar.top;

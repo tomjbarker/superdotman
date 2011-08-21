@@ -3,11 +3,14 @@ gameFeed({
 		color:"#e42217",
 		top:400,
 		left:20,
+		hasFired:false,
 		landImg: ["img/tank_up.png", "img/tank_right.png", "img/tank_down.png", "img/tank_left.png"],
 		skyImg: ["img/flyingcharacter_up.png", "img/flyingcharacter_right.png", "img/flyingcharacter_down.png", "img/flyingcharacter_left.png"],
 		waterImg: ["img/kayak.png"],
 		paceOfMovement:12,
 		offensiveWeapon:{
+			projectileOrientation:0,
+			paceOfMovement:2,
 			top:0,
 			left:0,
 			defaultBulletImg: ["img/blast_small_up.png", "img/blast_small_right.png", "img/blast_small_down.png", "img/blast_small_left.png"]
