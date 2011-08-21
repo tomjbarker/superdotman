@@ -1,8 +1,5 @@
 var engine = function(){
 	var enemyList = [],
-	bgcolor = "",
-	forecolor = "",
-	charcolor = "",
 	mainChar = {},
 	MAX_DEPTH = 32,
 	viewFinderWidth = 750,
@@ -15,14 +12,10 @@ var engine = function(){
 	
 	if (grid_canvas.getContext){
 		stage = grid_canvas.getContext("2d");
-		space = grid_canvas.getContext("2d");
-		sky = grid_canvas.getContext("2d");
-		foreground = grid_canvas.getContext("2d");		
-		sdman = grid_canvas.getContext("2d");
-		dirt_color = foreground.createLinearGradient(0,0,0,750);
+		dirt_color = stage.createLinearGradient(0,0,0,750);
 		dirt_color.addColorStop(0.0, '#eb9a49');
 	    dirt_color.addColorStop(0.9, '#faed7d');		
-		sky_color = sky.createLinearGradient(0, 0, 0, 750),
+		sky_color = stage.createLinearGradient(0, 0, 0, 750),
 		sky_color.addColorStop(0.0, '#3a77bf');
 	    sky_color.addColorStop(0.9, '#b8d2ee');
 		
@@ -59,8 +52,8 @@ var engine = function(){
 	    var halfWidth  = grid_canvas.width / 2;
 	    var halfHeight = grid_canvas.height / 2;
 
-	    space.fillStyle = "rgb(0,0,0)";
-	    space.fillRect(0,0,grid_canvas.width,grid_canvas.height);
+	    stage.fillStyle = "rgb(0,0,0)";
+	    stage.fillRect(0,0,grid_canvas.width,grid_canvas.height);
 
 	    for( var i = 0; i < stars.length; i++ ) {
 	      stars[i].z -= 0.2;
@@ -78,8 +71,8 @@ var engine = function(){
 	      if( px >= 0 && px <= 500 && py >= 0 && py <= 400 ) {
 	        var size = (1 - stars[i].z / 32.0) * 5;
 	        var shade = parseInt((1 - stars[i].z / 32.0) * 255);
-	        space.fillStyle = "rgb(" + shade + "," + shade + "," + shade + ")";
-	        space.fillRect(px,py,size,size);
+	        stage.fillStyle = "rgb(" + shade + "," + shade + "," + shade + ")";
+	        stage.fillRect(px,py,size,size);
 	      }
 	    }
 	  }
@@ -89,11 +82,7 @@ return {
 gameInit:function(data){
 	initStars()
 	this.redCrab = data.redCrab; 
-	this.redCrab.ref = sdman
-	this.bgcolor = data.backColor;
-	this.forecolor = data.foreColor;
 	this.mainChar = data.sdmanObj;
-	this.mainChar.ref = sdman;
 	this.loadCharacterImages(this.mainChar);
 	this.loadCharacterImages(this.redCrab);
 	
@@ -140,13 +129,13 @@ spawnCharacter:function(character, ref){
 },
 
 drawLand:function(){
-	foreground.fillStyle = dirt_color;
-	foreground.fillRect(0,0,750,550);		
+	stage.fillStyle = dirt_color;
+	stage.fillRect(0,0,750,550);		
 },
 
 drawSky:function(){
-	sky.fillStyle = sky_color;
-	sky.fillRect(0,0,1750,1550);	
+	stage.fillStyle = sky_color;
+	stage.fillRect(0,0,1750,1550);	
 },
 
 drawStage:function(){
