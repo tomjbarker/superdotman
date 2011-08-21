@@ -8,7 +8,6 @@ var engine = function(){
 	viewFinderWidth = 750,
 	viewFinderHeight = 500,
 	currentLevel = "land",
-	groundTexture,
 	grid_canvas = document.getElementById("screen"),
 	orientation_enum = {"up":0, "right":1, "down": 2, "left": 3},
 	stars = [512];
@@ -18,6 +17,9 @@ var engine = function(){
 		sky = grid_canvas.getContext("2d");
 		foreground = grid_canvas.getContext("2d");		
 		sdman = grid_canvas.getContext("2d");
+		dirt_color = foreground.createLinearGradient(0,0,0,750);
+		dirt_color.addColorStop(0.0, '#eb9a49');
+	    dirt_color.addColorStop(0.9, '#faed7d');		
 		sky_color = sky.createLinearGradient(0, 0, 0, 750),
 		sky_color.addColorStop(0.0, '#3a77bf');
 	    sky_color.addColorStop(0.9, '#b8d2ee');
@@ -92,8 +94,6 @@ gameInit:function(data){
 	this.mainChar.ref = sdman;
 	this.loadCharacterImages(this.mainChar);
 	this.loadCharacterImages(this.redCrab);
-	this.groundTexture = new Image();
-	this.groundTexture.src = data.groundTexture
 	this.mainChar.landImgRef.onload = function(){
 		return setInterval("engine.enterFrame()", data.frameRate);
 	};
@@ -129,12 +129,7 @@ spawnCharacter:function(character){
 },
 
 drawLand:function(){
-//	console.log(this.mainChar.groundTexture)
-	var pattern = foreground.createPattern(this.groundTexture, "repeat");
-	foreground.fillStyle = pattern;
-//	foreground.fill();
-	
-//	foreground.fillStyle = this.forecolor;
+	foreground.fillStyle = dirt_color;
 	foreground.fillRect(0,0,750,550);		
 },
 
@@ -154,6 +149,7 @@ drawStage:function(){
 	}else{
 	this.drawSky();	
 	}
+	
 },
 
 keyPress:function(e){

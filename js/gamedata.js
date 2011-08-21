@@ -11,12 +11,11 @@ gameFeed({
 	foreColor:"#7F5A58",
 	backColor:"#3bb9ff",
 	frameRate:10,
-	groundTexture: "img/texture.jpg",
 	redCrab:{
 		top:40,
 		left:200,
 		landImg:["img/crab_up.png", "img/crab_right.png", "img/crab_down.png", "img/crab_left.png"],
-		skyImg:["img/crab_up.png", "img/crab_right.png", "img/crab_down.png", "img/crab_left.png"],
-		paceOfMovement:12
+		skyImg:["img/purple_crab_up.png", "img/purple_crab_right.png", "img/purple_crab_down.png", "img/purple_crab_left.png"],
+		paceOfMovement:10
 	}		
 });
